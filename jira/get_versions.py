@@ -1,7 +1,7 @@
 import requests
 from requests.auth import HTTPBasicAuth
 from dotenv import load_dotenv
-import os
+import os, re
 
 load_dotenv(verbose=True, override=True)
 
@@ -16,10 +16,12 @@ def get_versions():
 
     versions = jira_answer.json()
 
-    # Filter versions with "released" set to true and not archived
+    pattern = re.compile(r'\.0$')
 
-    unreleased_versions = [version for version in versions if (not version.get('released') and not version.get('archived'))]
-    
+    # Filter versions with "released" set to true and not archived
+    #unreleased_versions = [version for version in versions if (not version.get('released') and not version.get('archived'))]
+    unreleased_versions = [version for version in versions if (not version.get('archived') and pattern.search(version.get('name')))]
+
     # Extract and format the desired information
     unreleased_version_info = [
         {
