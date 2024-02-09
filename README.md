@@ -46,6 +46,9 @@ Then it concatenates evrything to create and upload a page in Confluence.
     python run.py
 ```
     
+## Known problems
+The caracters < or > or & if present in HTML, will raise Error
+
 ## License
 
 This project is licensed under the GNU General Public License - see the [LICENSE](LICENSE) file for details.
