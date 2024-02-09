@@ -29,3 +29,9 @@ def create_page(html, title):
     }
 
     confluence_answer = requests.post(url=url, data=payload_json, headers=headers, auth=basic_auth)
+
+    if confluence_answer.status_code != 200:
+        print("Call to Jira returned with code "+str(confluence_answer.status_code))
+        raise Exception("Failed to create page. Error: "+str(confluence_answer.content))
+    else:
+        print(confluence_answer)
