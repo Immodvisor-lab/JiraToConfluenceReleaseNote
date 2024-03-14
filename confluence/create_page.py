@@ -6,18 +6,23 @@ from requests.auth import HTTPBasicAuth
 
 load_dotenv()
 
-def create_page(html, title):
+def create_or_update_page(html, title, id_page=None, version_number=None):
 
-    url = f'{os.getenv("ATLASSIAN_URL")}/wiki/api/v2/pages'
+    update = True if id_page else False
+
+    url = f'{os.getenv("ATLASSIAN_URL")}/wiki/api/v2/pages{"/"+id_page if update else ""}'
 
     payload = {
-        "spaceId": os.getenv("CONFLUENCE_SPACE_ID"),
         "title": title,
-        "parentId": os.getenv("CONFLUENCE_PARENT_ID"),
         "body": {
             "representation": "storage",
             "value": html,
-        }
+        },
+        **({"parentId": os.getenv("CONFLUENCE_PARENT_ID")} if not update else {}),
+        **({"spaceId": os.getenv("CONFLUENCE_SPACE_ID")} if not update else {}),
+        **({"status": "current"} if update else {}),
+        **({"id": id_page} if update else {}),
+        **({"version": {"number": version_number+1, "message": "Automatic update"}} if update else {}),
     }
     payload_json = json.dumps(payload)
 
@@ -28,7 +33,10 @@ def create_page(html, title):
         'Accept': 'application/json',
     }
 
-    confluence_answer = requests.post(url=url, data=payload_json, headers=headers, auth=basic_auth)
+    if(not update):
+        confluence_answer = requests.post(url=url, data=payload_json, headers=headers, auth=basic_auth)
+    else: 
+        confluence_answer = requests.put(url=url, data=payload_json, headers=headers, auth=basic_auth)
 
     if confluence_answer.status_code != 200:
         print("Call to Jira returned with code "+str(confluence_answer.status_code))

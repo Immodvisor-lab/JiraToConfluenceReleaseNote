@@ -4,7 +4,8 @@ from issue import Issue
 from datetime import datetime
 from dotenv import load_dotenv
 import os
-from confluence.create_page import create_page
+from confluence.create_page import create_or_update_page
+from confluence.search_page import search_page
 
 load_dotenv()
 
@@ -63,33 +64,16 @@ class ReleaseNote:
                 self.content += "\n"+issue.get_final_content()
         return self.content
 
-    def __search_page(self):
-        try:
-            return False
-            #page_already_exists_id = search_page(self.version)
-            #return page_already_exists_id
-        except IndexError:
-            return False
-
     def create_or_update(self):
-        #id_page = self.__search_page()
-        #try: 
-        #if(id_page == False):
-        create_page(
+        id_and_version = search_page(self.__title())
+        create_or_update_page(
             self.__content(),
             self.__title(),
+            id_and_version[0],
+            id_and_version[1]
         )
-        print("Release note for version "+self.version+" successfully created.")
-"""             else:
-            update_page(
-                id_page,
-                self.__content(),
-                self.__description(),
-                self.__tags(),
-                self.__title(),
-            )
-            print("Release note for version "+self.version+" successfully updated.") """
-        #except Exception as e:
-        #    print("Page creation / update for release note on version "+self.version+" FAILED.")
-        #    print(e.args) 
+        if id_and_version[0] != None:
+            print("Release note successfully updated")
+        else:
+            print("Release note successfully created")
         
