@@ -19,8 +19,8 @@ def get_versions():
     pattern = re.compile(r'\.0$')
 
     # Filter versions with "released" set to true and not archived
-    #unreleased_versions = [version for version in versions if (not version.get('released') and not version.get('archived'))]
-    unreleased_versions = [version for version in versions if (not version.get('archived') and pattern.search(version.get('name')))]
+    unreleased_versions = [version for version in versions if (not version.get('released') and not version.get('archived'))]
+    #all_versions = [version for version in versions if (not version.get('archived') and pattern.search(version.get('name')))]
 
     # Extract and format the desired information
     unreleased_version_info = [

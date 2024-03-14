@@ -7,7 +7,7 @@ load_dotenv()
 
 def search_issues_in_version(version):
 
-    jql = f'project = {os.getenv("JIRA_PROJECT")} AND issuetype = "{os.getenv("JIRA_ISSUE_TYPE")}" AND fixVersion = "{version}"'
+    jql = f'project = {os.getenv("JIRA_PROJECT")} AND issuetype in {os.getenv("JIRA_ISSUE_TYPE")} AND fixVersion = "{version}"'
 
     if os.getenv("EXTRA_JQL"):
        jql += os.getenv("EXTRA_JQL")
