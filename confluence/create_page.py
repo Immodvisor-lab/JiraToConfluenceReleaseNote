@@ -38,8 +38,14 @@ def create_or_update_page(html, title, id_page=None, version_number=None):
     else: 
         confluence_answer = requests.put(url=url, data=payload_json, headers=headers, auth=basic_auth)
 
+    # Charger le JSON
+    answer = json.loads(confluence_answer.text)
+
+    # Construire l'URL complet en concaténant la clé 'base' avec la clé 'webui'
+    page_url = answer['_links']['base'] + answer['_links']['webui']
+
     if confluence_answer.status_code != 200:
         print("Call to Jira returned with code "+str(confluence_answer.status_code))
         raise Exception("Failed to create page. Error: "+str(confluence_answer.content))
     else:
-        print(confluence_answer)
+        return page_url

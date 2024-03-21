@@ -20,31 +20,31 @@ class ReleaseNote:
     def __title(self):
         return "Version "+self.version
     
-    def url(self):
-        return os.getenv("ATLASSIAN_URL")
-    
-    def set_version(self):
+    def set_version(self, version_in = None):
         
-        versions = get_versions()
+        if(version_in is None):
+            versions = get_versions()
 
-        print("Choose a version :")
-        for index, version in enumerate(versions, start=1):
-            print(f"{index}. Name: {version['name']}, Release Date: {version['releaseDate']}")
-        
-        # Get user input for the chosen version
-        while True:
-            try:
-                choice = int(input("Enter the number of the version you want to choose: "))
-                if 1 <= choice <= len(versions):
-                    selected_version = versions[choice - 1]
-                    break
-                else:
-                    print("Invalid choice. Please enter a valid number.")
-            except ValueError:
-                print("Invalid input. Please enter a number.")
+            print("Choose a version :")
+            for index, version in enumerate(versions, start=1):
+                print(f"{index}. Name: {version['name']}, Release Date: {version['releaseDate']}")
+            
+            # Get user input for the chosen version
+            while True:
+                try:
+                    choice = int(input("Enter the number of the version you want to choose: "))
+                    if 1 <= choice <= len(versions):
+                        selected_version = versions[choice - 1]
+                        break
+                    else:
+                        print("Invalid choice. Please enter a valid number.")
+                except ValueError:
+                    print("Invalid input. Please enter a number.")
+        else:
+            get_this_version = get_versions(version_in)
+            selected_version = get_this_version[0]
 
         self.version = selected_version['name']
-
         release_date_object = datetime.strptime(selected_version['releaseDate'], '%Y-%m-%d')
         self.release_date = release_date_object.strftime('%d/%m/%y')
 
@@ -66,12 +66,13 @@ class ReleaseNote:
 
     def create_or_update(self):
         id_and_version = search_page(self.__title())
-        create_or_update_page(
+        self.url = create_or_update_page(
             self.__content(),
             self.__title(),
             id_and_version[0],
             id_and_version[1]
         )
+        
         if id_and_version[0] != None:
             print("Release note successfully updated")
         else:
