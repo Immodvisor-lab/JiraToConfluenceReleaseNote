@@ -5,9 +5,14 @@ import os
 
 load_dotenv()
 
-def search_issues_in_version(version):
+def search_issues_in_version(version, include_epics=True):
 
-    jql = f'project = {os.getenv("JIRA_PROJECT")} AND issuetype in {os.getenv("JIRA_ISSUE_TYPE")} AND fixVersion = "{version}"'
+    if include_epics:
+        issue_types = "(Story, Epic)"
+    else:
+        issue_types = "(Story)"
+    
+    jql = f'project = {os.getenv("JIRA_PROJECT")} AND issuetype in {issue_types} AND fixVersion = "{version}"'
 
     if os.getenv("EXTRA_JQL"):
        jql += os.getenv("EXTRA_JQL")
