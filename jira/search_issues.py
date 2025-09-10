@@ -17,7 +17,8 @@ def search_issues_in_version(version, include_epics=True):
     if os.getenv("EXTRA_JQL"):
        jql += os.getenv("EXTRA_JQL")
 
-    api_endpoint_search = f'{os.getenv("ATLASSIAN_URL")}/rest/api/3/search'
+    api_endpoint_search = f'{os.getenv("ATLASSIAN_URL")}/rest/api/3/search/jql'
+
     params = {
         'jql': jql,
         'fields': [
@@ -25,9 +26,7 @@ def search_issues_in_version(version, include_epics=True):
             os.getenv("JIRA_FIELD_TITLE"),
             os.getenv("JIRA_FIELD_CONTENT"),
         ],
-        'expand': [
-            "renderedFields",
-        ],
+        'expand': "renderedFields",
     }
 
     jira_answer = requests.post(

@@ -55,13 +55,15 @@ class ReleaseNote:
                 include_epics_input = input("Voulez-vous inclure les épics dans les release notes ? (yes/no): ").lower().strip()
                 if include_epics_input in ['yes', 'y', 'oui', 'o']:
                     include_epics = True
+                    print("---")
+                    print("Notez que les tickets d'épics doivent être dans la version pour apparaître dans la release note !")
+                    print("---")
                     break
                 elif include_epics_input in ['no', 'n', 'non']:
                     include_epics = False
                     break
                 else:
                     print("Veuillez répondre par 'yes' ou 'no'")
-            
             jira_issues = search_issues_in_version(self.version, include_epics)
             for issue_jira in jira_issues:
                 self.issues.append(Issue(issue_jira))
