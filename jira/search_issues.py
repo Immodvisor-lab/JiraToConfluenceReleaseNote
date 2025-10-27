@@ -17,7 +17,7 @@ def search_issues_in_version(version, include_epics=True):
     if os.getenv("EXTRA_JQL"):
        jql += os.getenv("EXTRA_JQL")
 
-    api_endpoint_search = f'{os.getenv("ATLASSIAN_URL")}/rest/api/3/search/jql'
+    api_endpoint_search = f'{os.getenv("ATLASSIAN_URL")}rest/api/3/search/jql'
 
     params = {
         'jql': jql,
